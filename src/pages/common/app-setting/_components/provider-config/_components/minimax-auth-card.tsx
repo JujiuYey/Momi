@@ -15,6 +15,7 @@ export function MiniMaxAuthCard({ onApiKeyImported }: MiniMaxAuthCardProps) {
 
   async function handleBrowserAuth() {
     setBrowserError("");
+    setClipboardMessage("");
 
     try {
       await openProviderAuth("minimax");
@@ -25,6 +26,7 @@ export function MiniMaxAuthCard({ onApiKeyImported }: MiniMaxAuthCardProps) {
   }
 
   async function handleClipboardImport() {
+    setBrowserError("");
     setClipboardMessage("");
 
     try {

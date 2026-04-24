@@ -30,6 +30,18 @@ describe("MiniMaxAuthCard", () => {
     expect(screen.getByText("回到 Momi，粘贴或从剪贴板填入")).toBeInTheDocument();
   });
 
+  it("shows a non-blocking error when browser auth fails", async () => {
+    openProviderAuthMock.mockRejectedValue(new Error("open_failed"));
+
+    render(<MiniMaxAuthCard onApiKeyImported={vi.fn()} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "前往 MiniMax 认证" }));
+
+    expect(
+      await screen.findByText("无法打开浏览器，请手动访问 MiniMax 控制台完成认证。")
+    ).toBeInTheDocument();
+  });
+
   it("imports api key from clipboard and shows success message", async () => {
     const onApiKeyImported = vi.fn();
 
@@ -56,5 +68,28 @@ describe("MiniMaxAuthCard", () => {
 
     expect(await screen.findByText("无法读取剪贴板，请手动粘贴 API Key。")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "从剪贴板填入" })).toBeInTheDocument();
+  });
+
+  it("clears stale browser errors after clipboard import succeeds", async () => {
+    const onApiKeyImported = vi.fn();
+
+    openProviderAuthMock.mockRejectedValueOnce(new Error("open_failed"));
+    readClipboardTextMock.mockResolvedValueOnce("minimax-api-key");
+
+    render(<MiniMaxAuthCard onApiKeyImported={onApiKeyImported} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "前往 MiniMax 认证" }));
+
+    expect(
+      await screen.findByText("无法打开浏览器，请手动访问 MiniMax 控制台完成认证。")
+    ).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "从剪贴板填入" }));
+
+    expect(await screen.findByText("已从剪贴板填入")).toBeInTheDocument();
+    expect(onApiKeyImported).toHaveBeenCalledWith("minimax-api-key");
+    expect(
+      screen.queryByText("无法打开浏览器，请手动访问 MiniMax 控制台完成认证。")
+    ).not.toBeInTheDocument();
   });
 });
