@@ -102,7 +102,7 @@ export function ProviderConfigPanel({ provider, setting, models }: ProviderConfi
   return (
     <div className="flex min-h-0 flex-1 flex-col bg-background">
       {/* Header */}
-      <div className="flex items-start justify-between gap-4 border-b px-8 py-6">
+      <div className="flex items-start justify-between gap-4 px-8 py-6">
         <div className="min-w-0 space-y-3">
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white shadow-xs ring-1 ring-black/5">
@@ -283,7 +283,7 @@ export function ProviderConfigPanel({ provider, setting, models }: ProviderConfi
       </ScrollArea>
 
       {/* Footer */}
-      <div className="flex flex-wrap items-center justify-end gap-3 border-t bg-background/95 px-8 py-4 backdrop-blur">
+      <div className="flex flex-wrap items-center justify-end gap-3 bg-background/95 px-8 py-4 backdrop-blur">
         <Button
           type="button"
           variant="destructive"

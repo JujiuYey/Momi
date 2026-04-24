@@ -20,7 +20,7 @@ export function ProviderList({
   configuredProviderIds,
 }: ProviderListProps) {
   return (
-    <aside className="flex h-full w-[248px] shrink-0 flex-col border-r bg-muted/10 p-3">
+    <aside className="flex h-full w-62 shrink-0 flex-col bg-muted/10 p-3">
       <nav className="space-y-1.5">
         {providers.map((provider) => {
           const isConfigured = configuredProviderIds.includes(provider.provider_id);
