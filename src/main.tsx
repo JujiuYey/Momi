@@ -6,6 +6,7 @@ import { createRoot } from "react-dom/client";
 import { Toaster } from "sonner";
 
 import { routeTree } from "./routeTree.gen";
+import { initializeTheme } from "@/hooks/use-theme";
 
 const router = createRouter({ routeTree });
 
@@ -24,6 +25,9 @@ const queryClient = new QueryClient({
     },
   },
 });
+
+// Initialize theme before render
+initializeTheme();
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

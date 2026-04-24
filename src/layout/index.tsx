@@ -5,7 +5,7 @@ import { AppSidebar } from "./sidebar";
 
 export function LayoutComponent() {
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen={false}>
       <AppSidebar />
       <SidebarInset>
         <Outlet />

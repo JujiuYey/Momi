@@ -12,7 +12,6 @@ import { cn } from "@/lib/utils";
 
 // 主题颜色选项
 const themeColors = [
-  { value: "zinc", label: "Zinc", preview: "#71717a" },
   { value: "red", label: "红色", preview: "#ef4444" },
   { value: "orange", label: "橙色", preview: "#f97316" },
   { value: "amber", label: "琥珀", preview: "#f59e0b" },
