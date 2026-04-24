@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   IconCheck,
   IconExternalLink,
@@ -100,6 +100,19 @@ export function ProviderConfigPanel({ provider, setting, models }: ProviderConfi
       .filter((option) => model.capabilities[option.key])
       .map((option) => option.label);
   }
+
+  useEffect(() => {
+    setApiKey(setting?.api_key ?? "");
+    setBaseUrl(setting?.base_url ?? provider.default_base_url);
+    setEnabled(setting?.enabled ?? true);
+  }, [
+    provider.default_base_url,
+    provider.provider_id,
+    setting?.api_key,
+    setting?.base_url,
+    setting?.enabled,
+    setting?.provider_id,
+  ]);
 
   return (
     <div className="flex min-h-0 flex-1 flex-col bg-background">

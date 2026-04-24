@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const { miniMaxAuthCardMock } = vi.hoisted(() => ({
   miniMaxAuthCardMock: vi.fn(
@@ -37,6 +37,10 @@ const setting = {
 };
 
 describe("ProviderConfigPanel", () => {
+  beforeEach(() => {
+    miniMaxAuthCardMock.mockClear();
+  });
+
   it("renders the MiniMax auth module only for minimax providers", () => {
     const { rerender } = render(
       <ProviderConfigPanel provider={minimaxProvider} setting={setting} models={[]} />
@@ -50,13 +54,44 @@ describe("ProviderConfigPanel", () => {
     expect(
       screen.queryByRole("button", { name: "Mock MiniMax Auth Card" })
     ).not.toBeInTheDocument();
+    expect(miniMaxAuthCardMock).toHaveBeenCalledTimes(1);
   });
 
-  it("writes imported api keys from the MiniMax auth module into the main input", () => {
-    render(<ProviderConfigPanel provider={minimaxProvider} setting={setting} models={[]} />);
+  it("resets the api key input when rerendering from minimax to another provider", () => {
+    const { rerender } = render(
+      <ProviderConfigPanel provider={minimaxProvider} setting={setting} models={[]} />
+    );
 
     fireEvent.click(screen.getByRole("button", { name: "Mock MiniMax Auth Card" }));
 
     expect(screen.getByPlaceholderText("请输入 API 密钥")).toHaveValue("imported-minimax-key");
+
+    rerender(<ProviderConfigPanel provider={openAIProvider} setting={null} models={[]} />);
+
+    expect(screen.getByPlaceholderText("请输入 API 密钥")).toHaveValue("");
+    expect(
+      screen.queryByRole("button", { name: "Mock MiniMax Auth Card" })
+    ).not.toBeInTheDocument();
+  });
+
+  it("keeps imported draft api keys across equivalent same-provider rerenders", () => {
+    const { rerender } = render(
+      <ProviderConfigPanel provider={minimaxProvider} setting={setting} models={[]} />
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Mock MiniMax Auth Card" }));
+
+    expect(screen.getByPlaceholderText("请输入 API 密钥")).toHaveValue("imported-minimax-key");
+
+    rerender(
+      <ProviderConfigPanel
+        provider={{ ...minimaxProvider }}
+        setting={{ ...setting }}
+        models={[]}
+      />
+    );
+
+    expect(screen.getByPlaceholderText("请输入 API 密钥")).toHaveValue("imported-minimax-key");
+    expect(screen.getByRole("button", { name: "Mock MiniMax Auth Card" })).toBeInTheDocument();
   });
 });
