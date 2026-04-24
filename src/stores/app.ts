@@ -4,6 +4,7 @@ import { persist } from "zustand/middleware";
 interface AppSettings {
   autoSave: boolean;
   theme: "system" | "light" | "dark";
+  themeColor: string;
 }
 
 interface AppState {
@@ -15,6 +16,7 @@ interface AppState {
 const defaultSettings: AppSettings = {
   autoSave: true,
   theme: "system",
+  themeColor: "zinc",
 };
 
 export const useAppStore = create<AppState>()(

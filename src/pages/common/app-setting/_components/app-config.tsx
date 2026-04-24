@@ -1,145 +1,130 @@
-import { IconDeviceFloppy, IconRotate, IconTrash } from "@tabler/icons-react";
-import { useState } from "react";
-import { toast } from "sonner";
+import { IconSun, IconMoon, IconDeviceDesktop } from "@tabler/icons-react";
 
-import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { Switch } from "@/components/ui/switch";
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAppStore } from "@/stores/app";
+import { cn } from "@/lib/utils";
 
-export function AppConfig() {
-  const settings = useAppStore((s) => s.settings);
+// 主题颜色选项
+const themeColors = [
+  { value: "zinc", label: "Zinc", preview: "#71717a" },
+  { value: "red", label: "红色", preview: "#ef4444" },
+  { value: "orange", label: "橙色", preview: "#f97316" },
+  { value: "amber", label: "琥珀", preview: "#f59e0b" },
+  { value: "yellow", label: "黄色", preview: "#eab308" },
+  { value: "lime", label: "青柠", preview: "#84cc16" },
+  { value: "green", label: "绿色", preview: "#22c55e" },
+  { value: "emerald", label: "翡翠", preview: "#10b981" },
+  { value: "teal", label: "青色", preview: "#14b8a6" },
+  { value: "cyan", label: "蓝绿", preview: "#06b6d4" },
+  { value: "sky", label: "天蓝", preview: "#0ea5e9" },
+  { value: "blue", label: "蓝色", preview: "#3b82f6" },
+  { value: "indigo", label: "靛蓝", preview: "#6366f1" },
+  { value: "violet", label: "紫罗兰", preview: "#8b5cf6" },
+  { value: "purple", label: "紫色", preview: "#a855f7" },
+  { value: "fuchsia", label: "品红", preview: "#d946ef" },
+  { value: "pink", label: "粉色", preview: "#ec4899" },
+  { value: "rose", label: "玫瑰", preview: "#f43f5e" },
+];
+
+function ThemeColorToggle() {
+  const themeColor = useAppStore((s) => s.settings.themeColor);
   const updateSettings = useAppStore((s) => s.updateSettings);
-  const resetSettings = useAppStore((s) => s.resetSettings);
-
-  const [showClearConfirm, setShowClearConfirm] = useState(false);
-
-  const handleSave = () => {
-    updateSettings(settings);
-    toast.success("设置已保存");
-  };
-
-  const handleReset = () => {
-    resetSettings();
-    toast.success("已恢复默认设置");
-  };
-
-  const handleClearAllConversations = () => {
-    setShowClearConfirm(false);
-    toast.success("所有对话已清除");
-  };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-lg">应用设置</CardTitle>
-        <CardDescription>个性化应用体验</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {/* 自动保存 */}
-        <div className="flex items-center justify-between">
-          <div className="space-y-0.5">
-            <Label>自动保存对话</Label>
-            <p className="text-sm text-muted-foreground">自动保存对话历史到本地存储</p>
-          </div>
-          <Switch
-            checked={settings.autoSave}
-            onCheckedChange={(checked) => updateSettings({ autoSave: checked })}
-          />
-        </div>
+    <TooltipProvider>
+      <div className="flex flex-wrap items-center justify-end gap-2">
+        {themeColors.map((option) => (
+          <Tooltip key={option.value}>
+            <TooltipTrigger asChild>
+              <button
+                type="button"
+                aria-label={`切换到${option.label}`}
+                aria-pressed={themeColor === option.value}
+                className={cn(
+                  "flex h-5 w-5 items-center justify-center rounded-full border border-background/80 shadow-sm transition-all outline-none hover:scale-105 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                  themeColor === option.value &&
+                    "scale-105 ring-2 ring-ring ring-offset-2 ring-offset-background"
+                )}
+                style={{ backgroundColor: option.preview }}
+                onClick={() => updateSettings({ themeColor: option.value })}
+              >
+                <span className="sr-only">{option.label}</span>
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>{option.label}</TooltipContent>
+          </Tooltip>
+        ))}
+      </div>
+    </TooltipProvider>
+  );
+}
 
-        <Separator />
+function ThemeToggle() {
+  const theme = useAppStore((s) => s.settings.theme);
+  const updateSettings = useAppStore((s) => s.updateSettings);
 
-        {/* 清除数据 */}
-        <div className="flex items-center justify-between">
-          <div className="space-y-0.5">
-            <Label>清除数据</Label>
-            <p className="text-sm text-muted-foreground">删除所有对话记录，此操作不可撤销</p>
-          </div>
-          <Button variant="destructive" size="sm" onClick={() => setShowClearConfirm(true)}>
-            <IconTrash className="mr-2 h-4 w-4" />
-            清除所有对话
-          </Button>
-        </div>
+  return (
+    <Tabs
+      value={theme}
+      onValueChange={(value) =>
+        updateSettings({ theme: value as "system" | "light" | "dark" })
+      }
+    >
+      <TabsList>
+        <TabsTrigger value="light" className="gap-2">
+          <IconSun className="h-[1.2rem] w-[1.2rem]" />
+          浅色
+        </TabsTrigger>
+        <TabsTrigger value="dark" className="gap-2">
+          <IconMoon className="h-[1.2rem] w-[1.2rem]" />
+          深色
+        </TabsTrigger>
+        <TabsTrigger value="system" className="gap-2">
+          <IconDeviceDesktop className="h-[1.2rem] w-[1.2rem]" />
+          系统
+        </TabsTrigger>
+      </TabsList>
+    </Tabs>
+  );
+}
 
-        <Separator />
+export function AppConfig() {
+  return (
+    <div className="rounded-xl border bg-card p-6 shadow-sm">
+      <div className="mb-6">
+        <h2 className="text-lg font-semibold">应用设置</h2>
+        <p className="text-sm text-muted-foreground">个性化应用体验</p>
+      </div>
 
+      <div className="space-y-6">
         {/* 主题设置 */}
         <div className="flex items-center justify-between">
           <div className="space-y-0.5">
-            <Label>主题设置</Label>
+            <label className="text-sm font-medium">主题设置</label>
             <p className="text-sm text-muted-foreground">选择应用主题外观</p>
           </div>
-          <Select
-            value={settings.theme}
-            onValueChange={(value: "system" | "light" | "dark") => updateSettings({ theme: value })}
-          >
-            <SelectTrigger className="w-32">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="system">跟随系统</SelectItem>
-              <SelectItem value="light">浅色</SelectItem>
-              <SelectItem value="dark">深色</SelectItem>
-            </SelectContent>
-          </Select>
+          <ThemeToggle />
         </div>
-      </CardContent>
 
-      <CardFooter className="flex justify-between">
-        <Button variant="outline" onClick={handleReset}>
-          <IconRotate className="mr-2 h-4 w-4" />
-          重置默认
-        </Button>
-        <Button onClick={handleSave}>
-          <IconDeviceFloppy className="mr-2 h-4 w-4" />
-          保存设置
-        </Button>
-      </CardFooter>
+        <div className="h-px bg-border" />
 
-      {/* 清除确认对话框 */}
-      <Dialog open={showClearConfirm} onOpenChange={setShowClearConfirm}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>确认清除</DialogTitle>
-            <DialogDescription>
-              你确定要清除所有对话记录吗？此操作不可撤销，所有聊天历史将被永久删除。
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex justify-end gap-2 pt-4">
-            <Button variant="outline" onClick={() => setShowClearConfirm(false)}>
-              取消
-            </Button>
-            <Button variant="destructive" onClick={handleClearAllConversations}>
-              <IconTrash className="mr-2 h-4 w-4" />
-              确认清除
-            </Button>
+        {/* 主题颜色 */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="space-y-0.5">
+            <label className="text-sm font-medium">主题颜色</label>
+            <p className="text-sm text-muted-foreground">
+              为按钮、高亮和聚焦态选择一套主色
+            </p>
           </div>
-        </DialogContent>
-      </Dialog>
-    </Card>
+          <ThemeColorToggle />
+        </div>
+      </div>
+    </div>
   );
 }
