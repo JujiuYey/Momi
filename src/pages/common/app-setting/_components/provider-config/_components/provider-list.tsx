@@ -1,16 +1,11 @@
+import { type ProviderDefinition, type ProviderId } from "@/config/providers";
 import { cn } from "@/lib/utils";
 
-interface Provider {
-  provider_id: string;
-  name: string;
-  icon?: string;
-}
-
 interface ProviderListProps {
-  providers: Provider[];
-  selectedProviderId: string;
-  onSelectProvider: (id: string) => void;
-  configuredProviderIds: string[];
+  providers: ProviderDefinition[];
+  selectedProviderId: ProviderId;
+  onSelectProvider: (id: ProviderId) => void;
+  configuredProviderIds: ProviderId[];
 }
 
 export function ProviderList({

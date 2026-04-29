@@ -72,7 +72,7 @@ export function AppSettingPage() {
               return (
                 <div key={item.key}>
                   <Button
-                    variant={isActive ? "outline" : "ghost"}
+                    variant={isActive ? "default" : "ghost"}
                     className="w-full justify-start gap-3"
                     onClick={() => setActiveKey(item.key)}
                   >

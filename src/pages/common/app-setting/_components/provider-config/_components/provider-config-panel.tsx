@@ -22,16 +22,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Switch } from "@/components/ui/switch";
-
-import { MiniMaxAuthCard } from "./minimax-auth-card";
-
-interface Provider {
-  provider_id: string;
-  name: string;
-  icon?: string;
-  website?: string;
-  default_base_url: string;
-}
+import { type ProviderDefinition } from "@/config/providers";
 
 interface ProviderModel {
   provider_id: string;
@@ -53,7 +44,7 @@ interface ProviderSetting {
 }
 
 interface ProviderConfigPanelProps {
-  provider: Provider;
+  provider: ProviderDefinition;
   setting: ProviderSetting | null;
   models: ProviderModel[];
 }
@@ -206,10 +197,6 @@ export function ProviderConfigPanel({ provider, setting, models }: ProviderConfi
                 {showApiKey ? <IconEyeOff className="h-4 w-4" /> : <IconEye className="h-4 w-4" />}
               </button>
             </div>
-
-            {provider.provider_id === "minimax" && (
-              <MiniMaxAuthCard onApiKeyImported={setApiKey} />
-            )}
           </section>
 
           {/* 模型 */}

@@ -17,7 +17,7 @@ interface AppState {
 const defaultSettings: AppSettings = {
   autoSave: true,
   theme: "system",
-  themeColor: "orange",
+  themeColor: "amber",
 };
 
 // Helper to update settings and apply theme changes
